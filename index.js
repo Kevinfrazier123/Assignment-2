@@ -1,23 +1,27 @@
+
 // Get the current hour
 const now = new Date();
 const hour = now.getHours(); // returns 0 - 23
 
-// Select a background color based on the time of day
-let bgColor = "";
+// Selecting the image based on time of day
+let imgSrc = "";
 
 if (hour >= 6 && hour < 12) {
     // Morning: 6am - 12pm
-    bgColor = "#FFDAB9"; // light peach
+    imgSrc = "images/morning.jpeg"; // morning image path
 } else if (hour >= 12 && hour < 18) {
     // Afternoon: 12pm - 6pm
-    bgColor = "#87CEFA"; // light sky blue
+    imgSrc = "images/afternoon.jpeg"; //  afternoon image path
 } else if (hour >= 18 && hour < 21) {
     // Evening: 6pm - 9pm
-    bgColor = "#FFB6C1"; // light pink
+    imgSrc = "images/nighttime.jpeg"; //  evening image path
 } else {
     // Night: 9pm - 6am
-    bgColor = "#2F4F4F"; // dark slate gray
+    imgSrc = "images/nighttime.jpeg"; // night image path
 }
 
-// Apply the background color to the body
-document.body.style.backgroundColor = bgColor;
+
+const timeImage = document.getElementById("timeImage");
+if (timeImage) {
+    timeImage.src = imgSrc;
+}
