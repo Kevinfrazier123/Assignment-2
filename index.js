@@ -1,27 +1,50 @@
 
-// Get the current hour
-const now = new Date();
-const hour = now.getHours(); // returns 0 - 23
+(function () {
+  // Collect references
+  const buttons = Array.from(document.querySelectorAll(".subject-card"));
+  const lists = {
+    math: document.getElementById("math-topics"),
+    science: document.getElementById("science-topics"),
+    history: document.getElementById("history-topics"),
+  };
 
-// Selecting the image based on time of day
-let imgSrc = "";
+  // Utility — collapse all topic lists
+  function collapseAll() {
+    Object.values(lists).forEach((ul) => ul.classList.remove("show"));
+    buttons.forEach((btn) => btn.setAttribute("aria-expanded", "false"));
+  }
 
-if (hour >= 6 && hour < 12) {
-    // Morning: 6am - 12pm
-    imgSrc = "images/morning.jpeg"; // morning image path
-} else if (hour >= 12 && hour < 18) {
-    // Afternoon: 12pm - 6pm
-    imgSrc = "images/afternoon.jpeg"; //  afternoon image path
-} else if (hour >= 18 && hour < 21) {
-    // Evening: 6pm - 9pm
-    imgSrc = "images/nighttime.jpeg"; //  evening image path
-} else {
-    // Night: 9pm - 6am
-    imgSrc = "images/nighttime.jpeg"; // night image path
-}
+  // Toggle a given subject’s list; close others to keep it clean
+  function toggleSubject(subject) {
+    const list = lists[subject];
+    const btn = document.querySelector(`.subject-card[data-subject="${subject}"]`);
+    const willShow = !list.classList.contains("show");
 
+    collapseAll(); // close all first
+    if (willShow) {
+      list.classList.add("show");
+      btn.setAttribute("aria-expanded", "true");
+      // Optional: scroll the opened list into view on mobile
+      list.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }
 
-const timeImage = document.getElementById("timeImage");
-if (timeImage) {
-    timeImage.src = imgSrc;
-}
+  // Wire up clicks
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const subject = btn.dataset.subject; // "math" | "science" | "history"
+      toggleSubject(subject);
+    });
+    // Allow Enter/Space via native button semantics (no extra code needed)
+  });
+
+  // On load, ensure homepage is reset to top-level subjects only
+  document.addEventListener("DOMContentLoaded", collapseAll);
+
+  // If you ever want to auto-open a section (e.g., ?open=math), support it here:
+  const params = new URLSearchParams(location.search);
+  const openParam = params.get("open");
+  if (openParam && lists[openParam]) {
+    toggleSubject(openParam);
+  }
+})();
